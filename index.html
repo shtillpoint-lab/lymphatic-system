@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Лимфатическая система — Научфильм 2.0</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@300;700&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07101A;
+    --surface: #0E1C2A;
+    --card: #132336;
+    --teal: #00C9B1;
+    --teal-dim: #007A6D;
+    --teal-glow: rgba(0,201,177,0.15);
+    --amber: #F59E0B;
+    --text: #D4E8F0;
+    --muted: #6B8FA8;
+    --white: #FFFFFF;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 2rem;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 680px; }
+
+  .eyebrow {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+  }
+
+  .hero h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(2rem, 6vw, 4.2rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero h1 span { color: var(--teal); }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .btn-start {
+    display: inline-block;
+    padding: 0.9rem 2.4rem;
+    background: var(--teal);
+    color: #07101A;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: box-shadow .3s, transform .2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-start:hover {
+    box-shadow: 0 0 30px var(--teal), 0 0 60px rgba(0,201,177,0.3);
+    transform: translateY(-2px);
+  }
+
+  /* ── NAV DOTS ── */
+  .nav-dots {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--teal-dim);
+    cursor: pointer;
+    transition: background .3s, transform .3s;
+  }
+  .dot.active { background: var(--teal); transform: scale(1.5); }
+
+  /* ── SECTIONS ── */
+  .section {
+    min-height: 100vh;
+    padding: 5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-inner { max-width: 860px; width: 100%; }
+
+  .section-label {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    opacity: 0.7;
+  }
+
+  .section h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    color: var(--white);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .section p { color: var(--text); margin-bottom: 1rem; max-width: 680px; }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin: 2.5rem 0;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid rgba(0,201,177,0.1);
+    border-radius: 4px;
+    padding: 1.4rem 1rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 2.2rem;
+    color: var(--teal);
+    font-weight: 700;
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── VESSEL DIAGRAM ── */
+  .diagram-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 2rem auto;
+  }
+
+  canvas.body-diagram {
+    width: 100%;
+    display: block;
+  }
+
+  .hotspot-info {
+    background: var(--card);
+    border: 1px solid var(--teal-dim);
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+    margin-top: 1rem;
+    min-height: 80px;
+    font-size: 0.9rem;
+    color: var(--text);
+    transition: all .3s;
+  }
+
+  .hotspot-info strong { color: var(--teal); display: block; margin-bottom: 0.3rem; font-size: 1rem; }
+
+  /* ── ACCORDION ── */
+  .accordion { margin: 2rem 0; display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .acc-item {
+    background: var(--surface);
+    border: 1px solid rgba(0,201,177,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .acc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text);
+    user-select: none;
+    transition: background .2s;
+  }
+  .acc-header:hover { background: var(--teal-glow); }
+
+  .acc-arrow {
+    color: var(--teal);
+    font-size: 1.2rem;
+    transition: transform .3s;
+    flex-shrink: 0;
+  }
+
+  .acc-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .4s ease;
+    padding: 0 1.2rem;
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+
+  .acc-body.open { max-height: 300px; padding: 0 1.2rem 1rem; }
+  .acc-item.open .acc-arrow { transform: rotate(45deg); }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    align-items: center;
+    justify-content: center;
+    margin: 2.5rem 0;
+  }
+
+  .flow-step {
+    background: var(--card);
+    border: 1px solid rgba(0,201,177,0.15);
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+    text-align: center;
+    width: 150px;
+    flex-shrink: 0;
+  }
+
+  .flow-step-icon { font-size: 1.6rem; display: block; margin-bottom: 0.4rem; }
+  .flow-step-name { font-size: 0.8rem; color: var(--teal); font-weight: 500; margin-bottom: 0.3rem; }
+  .flow-step-desc { font-size: 0.72rem; color: var(--muted); }
+
+  .flow-arrow {
+    color: var(--teal-dim);
+    font-size: 1.4rem;
+    padding: 0 0.3rem;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+
+  /* ── QUIZ ── */
+  .quiz-wrap { max-width: 640px; margin: 0 auto; }
+
+  .quiz-progress {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 2rem;
+  }
+
+  .qp-dot {
+    flex: 1;
+    height: 3px;
+    background: var(--card);
+    border-radius: 2px;
+    transition: background .3s;
+  }
+  .qp-dot.done { background: var(--teal); }
+  .qp-dot.current { background: var(--amber); }
+
+  .quiz-q {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.1rem;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .quiz-opt {
+    background: var(--surface);
+    border: 1px solid rgba(0,201,177,0.12);
+    border-radius: 4px;
+    padding: 0.9rem 1.2rem;
+    cursor: pointer;
+    font-size: 0.92rem;
+    transition: all .2s;
+    text-align: left;
+    color: var(--text);
+  }
+  .quiz-opt:hover { background: var(--teal-glow); border-color: var(--teal); }
+  .quiz-opt.correct { background: rgba(0,201,177,0.2); border-color: var(--teal); color: var(--teal); }
+  .quiz-opt.wrong { background: rgba(239,68,68,0.15); border-color: #EF4444; color: #EF4444; }
+  .quiz-opt:disabled { pointer-events: none; }
+
+  .quiz-feedback {
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    border-radius: 4px;
+    font-size: 0.88rem;
+    min-height: 50px;
+  }
+  .quiz-feedback.correct { background: rgba(0,201,177,0.1); color: var(--teal); }
+  .quiz-feedback.wrong { background: rgba(239,68,68,0.1); color: #F87171; }
+
+  .btn-next {
+    margin-top: 1.2rem;
+    padding: 0.7rem 1.8rem;
+    background: transparent;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all .2s;
+    display: none;
+  }
+  .btn-next:hover { background: var(--teal-glow); }
+  .btn-next.visible { display: inline-block; }
+
+  .quiz-result {
+    text-align: center;
+    padding: 2rem 0;
+    display: none;
+  }
+  .quiz-result.visible { display: block; }
+  .result-score {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 3.5rem;
+    color: var(--teal);
+    font-weight: 700;
+  }
+  .result-label { color: var(--muted); margin-top: 0.5rem; }
+  .result-msg { font-size: 1.05rem; color: var(--text); margin-top: 1rem; max-width: 400px; margin-left: auto; margin-right: auto; }
+
+  .btn-retry {
+    margin-top: 1.5rem;
+    padding: 0.8rem 2rem;
+    background: var(--teal);
+    color: var(--bg);
+    border: none;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    transition: opacity .2s;
+  }
+  .btn-retry:hover { opacity: 0.85; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    border-top: 1px solid rgba(0,201,177,0.08);
+  }
+
+  footer a { color: var(--teal-dim); }
+
+  /* ── FADE IN ANIMATION ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="nav-dots" id="navDots">
+  <div class="dot active" onclick="scrollToSection(0)" title="Начало"></div>
+  <div class="dot" onclick="scrollToSection(1)" title="Что это?"></div>
+  <div class="dot" onclick="scrollToSection(2)" title="Анатомия"></div>
+  <div class="dot" onclick="scrollToSection(3)" title="Функции"></div>
+  <div class="dot" onclick="scrollToSection(4)" title="Иммунитет"></div>
+  <div class="dot" onclick="scrollToSection(5)" title="Викторина"></div>
+</nav>
+
+<!-- SECTION 0: HERO -->
+<section class="hero section" id="s0">
+  <canvas class="hero-canvas" id="vesselCanvas"></canvas>
+  <div class="hero-content">
+    <p class="eyebrow">Научфильм 2.0 · Лимфатическая система</p>
+    <h1>Невидимая <span>река</span> внутри тебя</h1>
+    <p class="hero-sub">Интерактивное путешествие по системе, о которой забывают — хотя она охраняет каждую клетку твоего тела.</p>
+    <button class="btn-start" onclick="scrollToSection(1)">Начать путешествие</button>
+  </div>
+</section>
+
+<!-- SECTION 1: ЧТО ЭТО? -->
+<section class="section" id="s1">
+  <div class="section-inner fade-in">
+    <p class="section-label">Введение</p>
+    <h2>Система, которую не видно</h2>
+    <p>В теле человека протекает не только кровь. Параллельно с кровеносными сосудами пролегает разветвлённая сеть лимфатических капилляров — и она охватывает почти все органы и ткани.</p>
+    <p>По этой сети течёт лимфа: прозрачная жидкость, богатая белыми кровяными клетками. Лимфа — это, по сути, очищенная межклеточная жидкость, которую организм «возвращает» в кровоток после фильтрации.</p>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-num">600+</span>
+        <span class="stat-label">лимфоузлов в теле</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">2–3 л</span>
+        <span class="stat-label">лимфы в день</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">~2 кг</span>
+        <span class="stat-label">масса лимфоидной ткани</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">1 л/ч</span>
+        <span class="stat-label">скорость тока лимфы</span>
+      </div>
+    </div>
+
+    <p style="color:var(--muted); font-size:0.85rem;">Лимфатическая система не имеет собственного насоса, как сердце у кровеносной. Она движется за счёт мышечных сокращений, дыхания и клапанов внутри сосудов.</p>
+  </div>
+</section>
+
+<!-- SECTION 2: АНАТОМИЯ (интерактивная схема) -->
+<section class="section" id="s2">
+  <div class="section-inner fade-in">
+    <p class="section-label">Анатомия</p>
+    <h2>Нажми на орган — узнай его роль</h2>
+    <p>Лимфатическая система состоит из нескольких ключевых органов. Каждый выполняет свою задачу в единой сети защиты.</p>
+
+    <div class="diagram-wrap">
+      <canvas id="bodyCanvas" class="body-diagram" width="400" height="520"></canvas>
+      <div class="hotspot-info" id="hotspotInfo">
+        <strong>Нажми на орган на схеме</strong>
+        Ты увидишь его роль в лимфатической системе.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: ФУНКЦИИ -->
+<section class="section" id="s3">
+  <div class="section-inner fade-in">
+    <p class="section-label">Функции</p>
+    <h2>Три главные задачи</h2>
+
+    <div class="flow">
+      <div class="flow-step">
+        <span class="flow-step-icon">💧</span>
+        <div class="flow-step-name">Дренаж</div>
+        <div class="flow-step-desc">Возвращает избыток межклеточной жидкости в кровоток</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="flow-step-icon">🛡️</span>
+        <div class="flow-step-name">Иммунитет</div>
+        <div class="flow-step-desc">Фильтрует патогены через лимфоузлы, активирует лимфоциты</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="flow-step-icon">🍔</span>
+        <div class="flow-step-name">Абсорбция</div>
+        <div class="flow-step-desc">Переносит жиры из кишечника в кровь через «млечные» сосуды</div>
+      </div>
+    </div>
+
+    <div class="accordion" id="accordion">
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          Почему лимфа не «насосная»?
+          <span class="acc-arrow">+</span>
+        </div>
+        <div class="acc-body">
+          В отличие от сердца, у лимфатической системы нет центрального насоса. Движение лимфы обеспечивается сокращением скелетных мышц, пульсацией соседних артерий и дыхательными движениями диафрагмы. Именно поэтому физическая активность так важна для лимфотока — малоподвижный образ жизни буквально «тормозит» очищение тканей.
+        </div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          Что такое лимфоэдема?
+          <span class="acc-arrow">+</span>
+        </div>
+        <div class="acc-body">
+          Если отток лимфы нарушен (после операции, при опухоли или паразитарной инфекции), жидкость скапливается в тканях — возникает лимфоэдема. Это хроническое состояние, характеризующееся стойким отёком конечности. Современное лечение: мануальный дренаж, компрессионный трикотаж и специальные упражнения.
+        </div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          Как связаны лимфома и лимфатическая система?
+          <span class="acc-arrow">+</span>
+        </div>
+        <div class="acc-body">
+          Лимфома — рак лимфоидной ткани. Опухоль развивается из лимфоцитов, которые теряют нормальный жизненный цикл и начинают бесконтрольно делиться. Существует два основных типа: лимфома Ходжкина и неходжкинские лимфомы. Современные таргетные препараты и иммунотерапия значительно улучшили прогноз при большинстве форм.
+        </div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          Открытие лимфатической системы мозга
+          <span class="acc-arrow">+</span>
+        </div>
+        <div class="acc-body">
+          До 2015 года учёные считали, что мозг лишён лимфатической дренажной системы. В 2015 году исследователи из Университета Вирджинии открыли лимфатические сосуды в оболочках головного мозга. Это меняет понимание таких болезней, как Альцгеймер: нарушение глимфатического очищения мозга во сне может быть связано с накоплением токсичного амилоида.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: ИММУНИТЕТ -->
+<section class="section" id="s4">
+  <div class="section-inner fade-in">
+    <p class="section-label">Иммунитет</p>
+    <h2>Армия внутри узлов</h2>
+    <p>Лимфоузлы — не просто «шарики» под кожей. Это настоящие иммунные форпосты: здесь лимфоциты обучаются распознавать врагов и уничтожать их.</p>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-num">Т-клетки</span>
+        <span class="stat-label">«убийцы» заражённых клеток</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">В-клетки</span>
+        <span class="stat-label">производят антитела</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">NK-клетки</span>
+        <span class="stat-label">атакуют без «предъявления» антигена</span>
+      </div>
+    </div>
+
+    <p>Когда инфекция активна, лимфоузлы увеличиваются — именно поэтому «опухшие железы» под челюстью сигнализируют о простуде. Это нормальный признак того, что иммунная система работает.</p>
+
+    <p style="margin-top:1.2rem; padding: 1rem 1.2rem; background: var(--card); border-left: 3px solid var(--teal); border-radius:2px; font-size:0.9rem;">
+      <strong style="color:var(--teal);">Новые данные 2020-х:</strong> исследования в области CAR-T терапии показывают, что модифицированные Т-лимфоциты способны находить и уничтожать раковые клетки с высокой точностью — новая эра иммуноонкологии полностью строится на механизмах лимфатической системы.
+    </p>
+  </div>
+</section>
+
+<!-- SECTION 5: ВИКТОРИНА -->
+<section class="section" id="s5">
+  <div class="section-inner fade-in">
+    <p class="section-label">Проверь себя</p>
+    <h2>Викторина</h2>
+    <p style="margin-bottom:2rem;">5 вопросов — проверим, что ты запомнил из путешествия.</p>
+
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="quizProgress"></div>
+      <div id="quizContainer"></div>
+      <div class="quiz-result" id="quizResult">
+        <div class="result-score" id="resultScore"></div>
+        <div class="result-label">из 5 правильных ответов</div>
+        <div class="result-msg" id="resultMsg"></div>
+        <button class="btn-retry" onclick="initQuiz()">Пройти ещё раз</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Создано на основе советского НаучФильма (1975) · Обновлено современными данными 2024<br>
+  <span style="opacity:0.5;">Научпоп · Интерактивный формат</span>
+</footer>
+
+<script>
+// ── VESSEL CANVAS (hero animation) ──────────────────────────────────────
+const vc = document.getElementById('vesselCanvas');
+const ctx = vc.getContext('2d');
+let vessels = [];
+
+function resizeVC() {
+  vc.width = window.innerWidth;
+  vc.height = window.innerHeight;
+}
+resizeVC();
+window.addEventListener('resize', resizeVC);
+
+function initVessels() {
+  vessels = [];
+  const count = Math.min(30, Math.floor(window.innerWidth / 30));
+  for (let i = 0; i < count; i++) {
+    vessels.push({
+      x: Math.random() * vc.width,
+      y: Math.random() * vc.height,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: Math.random() * 0.5 + 0.2,
+      alpha: Math.random() * 0.5 + 0.1,
+      r: Math.random() * 1.5 + 0.5,
+      pulse: Math.random() * Math.PI * 2
+    });
+  }
+}
+initVessels();
+
+function animVessels() {
+  ctx.clearRect(0, 0, vc.width, vc.height);
+  vessels.forEach(v => {
+    v.pulse += 0.02;
+    v.y += v.vy;
+    v.x += Math.sin(v.pulse * 0.5) * 0.3;
+    if (v.y > vc.height + 10) { v.y = -10; v.x = Math.random() * vc.width; }
+
+    ctx.beginPath();
+    ctx.arc(v.x, v.y, v.r * (1 + Math.sin(v.pulse) * 0.3), 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,201,177,${v.alpha * (0.7 + Math.sin(v.pulse) * 0.3)})`;
+    ctx.fill();
+  });
+
+  // connect nearby vessels
+  for (let i = 0; i < vessels.length; i++) {
+    for (let j = i + 1; j < vessels.length; j++) {
+      const dx = vessels[i].x - vessels[j].x;
+      const dy = vessels[i].y - vessels[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 120) {
+        ctx.beginPath();
+        ctx.moveTo(vessels[i].x, vessels[i].y);
+        ctx.lineTo(vessels[j].x, vessels[j].y);
+        ctx.strokeStyle = `rgba(0,201,177,${(1 - d/120) * 0.12})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animVessels);
+}
+animVessels();
+
+// ── BODY DIAGRAM ──────────────────────────────────────────────────────────
+const bc = document.getElementById('bodyCanvas');
+const bctx = bc.getContext('2d');
+
+const organs = [
+  { name: 'Миндалины', x: 200, y: 68, r: 18,
+    info: 'Лимфоидная ткань в глотке. Первая линия защиты от патогенов, попадающих через рот и нос. Содержат большое количество лимфоцитов.' },
+  { name: 'Вилочковая железа (тимус)', x: 200, y: 130, r: 22,
+    info: 'Главный «университет» Т-лимфоцитов. Здесь незрелые клетки обучаются распознавать «своих» и «чужих». С возрастом тимус уменьшается и замещается жиром — но своё дело он делает в детстве.' },
+  { name: 'Лимфоузлы подмышки', x: 120, y: 185, r: 14,
+    info: 'Фильтруют лимфу от руки и груди. Именно их исследуют при диагностике рака молочной железы — метастазы туда попадают по лимфатическим сосудам.' },
+  { name: 'Грудной проток', x: 200, y: 220, r: 10,
+    info: 'Главный коллектор лимфатической системы. Собирает лимфу от нижних конечностей, брюшной полости и левой части тела, впадая в левую подключичную вену.' },
+  { name: 'Селезёнка', x: 155, y: 250, r: 20,
+    info: 'Крупнейший лимфоидный орган. Фильтрует кровь (не лимфу!), уничтожает старые эритроциты и формирует иммунный ответ. При некоторых инфекциях (мононуклеоз) может резко увеличиться.' },
+  { name: 'Пейеровы бляшки', x: 200, y: 330, r: 16,
+    info: 'Лимфоидные скопления в стенке тонкого кишечника. Иммунный «таможенный контроль» для всего, что мы съели. Важны для формирования иммунитета слизистых оболочек.' },
+  { name: 'Паховые лимфоузлы', x: 200, y: 420, r: 14,
+    info: 'Собирают лимфу от ног, органов таза и нижней части живота. Увеличиваются при воспалениях и инфекциях в этих областях.' },
+];
+
+let hoveredOrgan = null;
+
+function drawBody() {
+  bctx.clearRect(0, 0, bc.width, bc.height);
+
+  // body silhouette
+  bctx.save();
+  bctx.strokeStyle = 'rgba(0,201,177,0.15)';
+  bctx.lineWidth = 1.5;
+
+  // head
+  bctx.beginPath();
+  bctx.ellipse(200, 42, 32, 38, 0, 0, Math.PI * 2);
+  bctx.stroke();
+
+  // torso
+  bctx.beginPath();
+  bctx.moveTo(155, 78); bctx.lineTo(130, 160);
+  bctx.lineTo(125, 290); bctx.lineTo(145, 360);
+  bctx.lineTo(165, 360); bctx.lineTo(175, 290);
+  bctx.lineTo(225, 290); bctx.lineTo(235, 360);
+  bctx.lineTo(255, 360); bctx.lineTo(275, 290);
+  bctx.lineTo(270, 160); bctx.lineTo(245, 78);
+  bctx.closePath();
+  bctx.stroke();
+
+  // arms
+  bctx.beginPath();
+  bctx.moveTo(130, 155); bctx.quadraticCurveTo(85, 220, 95, 310);
+  bctx.moveTo(270, 155); bctx.quadraticCurveTo(315, 220, 305, 310);
+  bctx.stroke();
+
+  // legs
+  bctx.beginPath();
+  bctx.moveTo(165, 360); bctx.lineTo(150, 490);
+  bctx.moveTo(235, 360); bctx.lineTo(250, 490);
+  bctx.stroke();
+
+  // lymph vessel lines
+  bctx.strokeStyle = 'rgba(0,201,177,0.35)';
+  bctx.lineWidth = 1;
+  bctx.setLineDash([3, 4]);
+  bctx.beginPath();
+  bctx.moveTo(200, 68); bctx.lineTo(200, 500);
+  bctx.moveTo(120, 185); bctx.bezierCurveTo(130, 200, 170, 215, 200, 220);
+  bctx.moveTo(200, 330); bctx.lineTo(200, 420);
+  bctx.stroke();
+  bctx.setLineDash([]);
+  bctx.restore();
+
+  // organs
+  organs.forEach((o, i) => {
+    const isHov = hoveredOrgan === i;
+    bctx.save();
+    bctx.beginPath();
+    bctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+    bctx.fillStyle = isHov ? 'rgba(0,201,177,0.35)' : 'rgba(0,201,177,0.12)';
+    bctx.fill();
+    bctx.strokeStyle = isHov ? '#00C9B1' : 'rgba(0,201,177,0.5)';
+    bctx.lineWidth = isHov ? 2 : 1;
+    bctx.stroke();
+
+    if (isHov) {
+      bctx.shadowColor = '#00C9B1';
+      bctx.shadowBlur = 12;
+      bctx.stroke();
+    }
+    bctx.restore();
+
+    // label
+    bctx.fillStyle = isHov ? '#00C9B1' : 'rgba(0,201,177,0.6)';
+    bctx.font = isHov ? '500 9px Inter' : '9px Inter';
+    bctx.textAlign = o.x > 200 ? 'left' : 'right';
+    const lx = o.x > 200 ? o.x + o.r + 4 : o.x - o.r - 4;
+    const firstName = o.name.split(' ')[0];
+    bctx.fillText(firstName, lx, o.y + 3);
+  });
+}
+
+function getScaledPos(e) {
+  const rect = bc.getBoundingClientRect();
+  const scaleX = bc.width / rect.width;
+  const scaleY = bc.height / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY
+  };
+}
+
+bc.addEventListener('mousemove', e => {
+  const {x, y} = getScaledPos(e);
+  let found = -1;
+  organs.forEach((o, i) => {
+    const d = Math.sqrt((x-o.x)**2 + (y-o.y)**2);
+    if (d < o.r + 8) found = i;
+  });
+  hoveredOrgan = found;
+  bc.style.cursor = found >= 0 ? 'pointer' : 'default';
+  drawBody();
+});
+
+function handleClick(e) {
+  const {x, y} = getScaledPos(e);
+  organs.forEach((o, i) => {
+    const d = Math.sqrt((x-o.x)**2 + (y-o.y)**2);
+    if (d < o.r + 8) {
+      document.getElementById('hotspotInfo').innerHTML =
+        `<strong>${o.name}</strong>${o.info}`;
+    }
+  });
+}
+bc.addEventListener('click', handleClick);
+bc.addEventListener('touchend', e => { e.preventDefault(); handleClick(e.changedTouches[0]); }, {passive:false});
+
+drawBody();
+
+// ── ACCORDION ────────────────────────────────────────────────────────────
+function toggleAcc(header) {
+  const item = header.parentElement;
+  const body = item.querySelector('.acc-body');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.acc-item').forEach(it => {
+    it.classList.remove('open');
+    it.querySelector('.acc-body').classList.remove('open');
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    body.classList.add('open');
+  }
+}
+
+// ── QUIZ ─────────────────────────────────────────────────────────────────
+const questions = [
+  {
+    q: 'Сколько примерно лимфоузлов в теле взрослого человека?',
+    opts: ['около 50', 'около 200', 'более 600', 'около 1000'],
+    correct: 2,
+    explain: 'В теле человека насчитывается более 600 лимфатических узлов — они сосредоточены в шее, подмышках, паху, брюшной полости и других местах.'
+  },
+  {
+    q: 'Что заставляет лимфу двигаться по сосудам?',
+    opts: ['Сердечный насос', 'Мышечные сокращения и дыхание', 'Перистальтика кишечника', 'Артериальное давление'],
+    correct: 1,
+    explain: 'У лимфатической системы нет собственного насоса. Лимфа движется благодаря сокращению скелетных мышц, дыхательным движениям и клапанам внутри сосудов.'
+  },
+  {
+    q: 'Где Т-лимфоциты проходят «обучение»?',
+    opts: ['В селезёнке', 'В лимфоузлах', 'В вилочковой железе (тимусе)', 'В костном мозге'],
+    correct: 2,
+    explain: 'Тимус (вилочковая железа) — орган, где незрелые лимфоциты обучаются различать «свои» клетки от «чужих». Отсюда буква «Т» в названии Т-лимфоцитов.'
+  },
+  {
+    q: 'Что открыли учёные в мозге в 2015 году?',
+    opts: ['Новый тип нейронов', 'Лимфатические сосуды в оболочках мозга', 'Дополнительные лимфоциты', 'Вторичный тимус'],
+    correct: 1,
+    explain: 'До 2015 года считалось, что мозг лишён лимфатической дренажной системы. Открытие лимфатических сосудов в мозговых оболочках изменило понимание болезней, таких как Альцгеймер.'
+  },
+  {
+    q: 'Какой орган лимфатической системы фильтрует кровь, а не лимфу?',
+    opts: ['Тимус', 'Пейеровы бляшки', 'Лимфоузлы', 'Селезёнка'],
+    correct: 3,
+    explain: 'Селезёнка — крупнейший лимфоидный орган — фильтрует именно кровь: уничтожает старые эритроциты и отвечает за иммунный ответ на кровяные патогены.'
+  }
+];
+
+let currentQ = 0, score = 0, answered = false;
+
+function initQuiz() {
+  currentQ = 0; score = 0; answered = false;
+  document.getElementById('quizResult').classList.remove('visible');
+  document.getElementById('quizContainer').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentQ];
+  const prog = document.getElementById('quizProgress');
+  prog.innerHTML = questions.map((_, i) => {
+    let cls = 'qp-dot';
+    if (i < currentQ) cls += ' done';
+    if (i === currentQ) cls += ' current';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+
+  document.getElementById('quizContainer').innerHTML = `
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((o, i) => `<button class="quiz-opt" onclick="selectOpt(${i})" id="opt${i}">${o}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <button class="btn-next" id="btnNext" onclick="nextQ()">
+      ${currentQ < questions.length - 1 ? 'Следующий вопрос →' : 'Посмотреть результат →'}
+    </button>
+  `;
+}
+
+function selectOpt(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentQ];
+  const fb = document.getElementById('quizFeedback');
+  const btn = document.getElementById('btnNext');
+
+  document.querySelectorAll('.quiz-opt').forEach((el, i) => {
+    if (i === q.correct) el.classList.add('correct');
+    else if (i === idx) el.classList.add('wrong');
+    el.disabled = true;
+  });
+
+  if (idx === q.correct) {
+    score++;
+    fb.className = 'quiz-feedback correct';
+    fb.innerHTML = '✓ Верно! ' + q.explain;
+  } else {
+    fb.className = 'quiz-feedback wrong';
+    fb.innerHTML = '✗ Не совсем. ' + q.explain;
+  }
+
+  btn.classList.add('visible');
+}
+
+function nextQ() {
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizContainer').style.display = 'none';
+  document.getElementById('quizProgress').innerHTML = questions.map(() => `<div class="qp-dot done"></div>`).join('');
+  const res = document.getElementById('quizResult');
+  res.classList.add('visible');
+  document.getElementById('resultScore').textContent = `${score}/5`;
+  const msgs = [
+    'Лимфатическая система ещё раскроет тебе свои тайны — попробуй снова!',
+    'Неплохое начало! Пройди ещё раз, чтобы закрепить.',
+    'Хороший результат! Ещё немного — и ты эксперт.',
+    'Отлично! Почти идеально.',
+    'Великолепно! Ты знаешь лимфатическую систему лучше среднего студента-медика.'
+  ];
+  document.getElementById('resultMsg').textContent = msgs[Math.min(score, 4)];
+}
+
+initQuiz();
+
+// ── NAV + SCROLL OBSERVER ─────────────────────────────────────────────────
+const sections = document.querySelectorAll('.section');
+const dots = document.querySelectorAll('.dot');
+
+function scrollToSection(i) {
+  sections[i].scrollIntoView({ behavior: 'smooth' });
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const i = [...sections].indexOf(e.target);
+      dots.forEach((d, j) => d.classList.toggle('active', j === i));
+    }
+  });
+}, { threshold: 0.5 });
+sections.forEach(s => observer.observe(s));
+
+// ── FADE-IN OBSERVER ──────────────────────────────────────────────────────
+const fadeEls = document.querySelectorAll('.fade-in');
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+fadeEls.forEach(el => fadeObs.observe(el));
+</script>
+</body>
+</html>
